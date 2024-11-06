@@ -6,39 +6,46 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 19:51:04 by teando            #+#    #+#             */
-/*   Updated: 2024/11/06 05:04:14 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/04 15:21:00 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 int	main(void)
 {
-	int		fd;
+	int		fd[3];
 	char	*r;
 	int		i;
+	int		j;
 
-	i = 0;
 	printf("start program\n");
-	fd = open("test.txt", O_RDONLY);
-	if (fd == -1)
+	i = 0;
+	j = 0;
+	fd[0] = open("test.txt", O_RDONLY);
+	fd[1] = open("1.txt", O_RDONLY);
+	fd[2] = open("2.txt", O_RDONLY);
+	while (j < 3)
 	{
-		perror("Error: I can't open file\n");
-		return (1);
+		if (fd[j] == -1)
+		{
+			perror("Error: I can't open file\n");
+			return (1);
+		}
+		printf("file is open: fd=%d\n===\n", fd[j]);
+		while (i++ < 5)
+		{
+			r = get_next_line(fd[i % 3]);
+			if (r == NULL)
+				break ;
+			printf("%s", r);
+			free(r);
+		}
+		close(fd[j]);
+		j++;
 	}
-	printf("file is open: fd=%d\n", fd);
-	printf("BUFFER_SIZE: %d\n===\n", BUFFER_SIZE);
-	while (i++ < 4)
-	{
-		r = get_next_line(fd);
-		if (r == NULL)
-			break ;
-		printf("%s", r);
-		free(r);
-	}
-	close(fd);
 	return (0);
 }
