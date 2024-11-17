@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 07:10:16 by teando            #+#    #+#             */
-/*   Updated: 2024/11/17 20:27:09 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/17 20:35:48 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ static ssize_t	read_buf_to_newline(char **r, char **newline, char **saved,
 	char	*buf;
 
 	read_total = 0;
-	if (saved[fd])
-		newline = ft_strchr(saved[fd], '\n');
 	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buf)
 		return (-1);
+	if (saved[fd])
+		newline = ft_strchr(saved[fd], '\n');
 	while (!*newline)
 	{
 		size = read(fd, buf, BUFFER_SIZE);
@@ -63,14 +63,14 @@ char	*get_next_line(int fd)
 	r = saved[fd];
 	if (!newline)
 	{
-		read_size = read_buf_to_newline(r, newline, saved[fd], fd);
+		read_size = read_buf_to_newline(&r, &newline, &saved, fd);
 		if (read_size == -1)
 			return (free(r), NULL);
 		if (read_size == 0)
 			saved[fd] = NULL;
 	}
 	if (newline)
-		if (str_partitioning(&r, &newline, &saved[fd], fd) == -1)
+		if (str_partitioning(&r, &newline, &saved, fd) == -1)
 			return (free(r), NULL);
 	return (r);
 }
