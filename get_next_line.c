@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 07:10:16 by teando            #+#    #+#             */
-/*   Updated: 2024/11/17 20:35:48 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/17 21:06:11 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static ssize_t	read_buf_to_newline(char **r, char **newline, char **saved,
 	if (!buf)
 		return (-1);
 	if (saved[fd])
-		newline = ft_strchr(saved[fd], '\n');
+		*newline = ft_strchr(saved[fd], '\n');
 	while (!*newline)
 	{
 		size = read(fd, buf, BUFFER_SIZE);
@@ -41,15 +41,6 @@ static ssize_t	read_buf_to_newline(char **r, char **newline, char **saved,
 	return (free(buf), read_total);
 }
 
-static ssize_t	str_partitioning(char **r, char **newline, char **saved, int fd)
-{
-	*saved[fd] = ft_strdup(*newline + 1);
-	if (!*saved[fd])
-		return (free(*r), -1);
-	(*r)[*newline - *r + 1] = '\0';
-	return (1);
-}
-
 char	*get_next_line(int fd)
 {
 	static char	*saved[FD_MAX];
@@ -57,20 +48,37 @@ char	*get_next_line(int fd)
 	char		*r;
 	ssize_t		read_size;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= FD_MAX)
 		return (NULL);
 	newline = NULL;
 	r = saved[fd];
 	if (!newline)
 	{
-		read_size = read_buf_to_newline(&r, &newline, &saved, fd);
+		read_size = read_buf_to_newline(&r, &newline, saved, fd);
 		if (read_size == -1)
-			return (free(r), NULL);
+			return (free(r), free(saved[fd]), NULL);
 		if (read_size == 0)
 			saved[fd] = NULL;
 	}
 	if (newline)
-		if (str_partitioning(&r, &newline, &saved, fd) == -1)
+	{
+		free(saved[fd]);
+		saved[fd] = ft_strdup(newline + 1);
+		if (!saved[fd])
 			return (free(r), NULL);
+		r[newline - r + 1] = '\0';
+	}
 	return (r);
 }
+
+// if (code <= 0 && r && *r)
+// {
+// 	if (code == -1 && saved != r)
+// 		free(saved);
+// 	saved = NULL;
+// }
+// if (code == -1 || (r && !*r))
+// {
+// 	free(r);
+// 	r = NULL;
+// }

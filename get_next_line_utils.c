@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 09:01:59 by teando            #+#    #+#             */
-/*   Updated: 2024/11/17 20:03:44 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/17 20:42:40 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ void	*ft_realloc(void *ptr, size_t size)
 
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 {
-	size_t dst_len;
-	size_t src_len;
+	size_t	dst_len;
+	size_t	src_len;
 
 	if (dstsize == 0)
 		return (ft_strlen(src));
