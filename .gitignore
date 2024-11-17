@@ -1,3 +1,5 @@
+.vscode
+
 # Prerequisites
 *.d
 
@@ -49,5 +51,4 @@
 modules.order
 Module.symvers
 Mkfile.old
-dkms.conf
-*test*
+dkms.con
