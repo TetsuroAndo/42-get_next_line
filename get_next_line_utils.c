@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 09:01:59 by teando            #+#    #+#             */
-/*   Updated: 2024/11/17 20:42:40 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/18 01:56:16 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*ft_strdup(const char *s)
 	size_t	len;
 
 	len = ft_strlen(s);
-	r_head = (char *)malloc((len + 1) * sizeof(char));
+	r_head = (char *)malloc(sizeof(char) * (len + 1));
 	if (r_head)
 	{
 		r = r_head;
@@ -51,26 +51,6 @@ char	*ft_strdup(const char *s)
 		*r = '\0';
 	}
 	return (r_head);
-}
-
-void	*ft_realloc(void *ptr, size_t size)
-{
-	void	*new_ptr;
-	void	*ptr_haed;
-
-	if (!ptr)
-		return (malloc(size));
-	if (size)
-	{
-		new_ptr = malloc(size);
-		if (!new_ptr)
-			return (NULL);
-		ptr_haed = new_ptr;
-		while (size--)
-			*(unsigned char *)new_ptr++ = *(unsigned char *)ptr++;
-	}
-	free(ptr);
-	return (ptr_haed);
 }
 
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
@@ -92,4 +72,31 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 		*dst = '\0';
 	}
 	return (dst_len + src_len);
+}
+
+
+void	*ft_realloc(void *ptr, size_t size)
+{
+	void	*new_ptr;
+	size_t	old_size;
+	ssize_t	i;
+
+	
+	if (!ptr)
+		return (malloc(1 * size));
+	if(!size)
+		return (NULL);
+	new_ptr = malloc(1 * size);
+	if (!new_ptr)
+		return (NULL);
+	old_size = ft_strlen(ptr);
+	i = -1;
+	if (old_size < size)
+		while (++i < old_size)
+			((unsigned char *)new_ptr)[i] = ((unsigned char *)ptr)[i];
+	else
+		while (++i < size)
+			((unsigned char *)new_ptr)[i] = ((unsigned char *)ptr)[i];
+	free(ptr);
+	return (new_ptr);
 }
