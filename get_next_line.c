@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 07:10:16 by teando            #+#    #+#             */
-/*   Updated: 2024/11/18 01:59:33 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/18 02:41:10 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,6 @@ static ssize_t	read_buf_to_newline(char **r, char **newline, char **saved,
 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buf)
 		return (-1);
-	if (*r == NULL) {
-		*r = malloc(1);
-		if (!*r)
-			return (free(buf), -1);
-		**r = '\0';
-	}
 	if (saved[fd])
 		*newline = ft_strchr(saved[fd], '\n');
 	while (!*newline)
@@ -42,10 +36,21 @@ static ssize_t	read_buf_to_newline(char **r, char **newline, char **saved,
 		*r = realloc(*r, read_total + 1);
 		if (!*r)
 			return (free(buf), -1);
-		ft_strlcat(*r, buf, read_total + 1);
-		*newline = ft_strchr(*r, '\n');
+		if (*r && *buf)
+			ft_strlcat(*r, buf, read_total + 1);
+		*newline = ft_strchr(*r + (read_total - size), '\n');
 	}
 	return (free(buf), read_total);
+}
+
+static void init(char **r)
+{
+	if (*r == NULL)
+	{
+		*r = malloc(1);
+		if (*r)
+			**r = '\0';
+	}
 }
 
 char	*get_next_line(int fd)
@@ -59,6 +64,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	newline = NULL;
 	r = saved[fd];
+	init(&r);
 	read_size = read_buf_to_newline(&r, &newline, saved, fd);
 	if (read_size == -1)
 		return (free(r), free(saved[fd]), NULL);

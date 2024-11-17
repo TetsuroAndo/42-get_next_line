@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 09:01:59 by teando            #+#    #+#             */
-/*   Updated: 2024/11/18 01:56:16 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/18 02:40:35 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	size_t	dst_len;
 	size_t	src_len;
 
-	if (dstsize == 0)
+	if (!dstsize || !dst)
 		return (ft_strlen(src));
 	dst_len = ft_strlen(dst);
 	if (dstsize <= dst_len)
@@ -74,29 +74,25 @@ size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 	return (dst_len + src_len);
 }
 
-
 void	*ft_realloc(void *ptr, size_t size)
 {
-	void	*new_ptr;
-	size_t	old_size;
-	ssize_t	i;
-
+	void	*newptr;
+	size_t	oldsize;
 	
 	if (!ptr)
 		return (malloc(1 * size));
 	if(!size)
+		return (free(ptr), NULL);
+	newptr = malloc(1 * size);
+	if (!newptr)
 		return (NULL);
-	new_ptr = malloc(1 * size);
-	if (!new_ptr)
-		return (NULL);
-	old_size = ft_strlen(ptr);
-	i = -1;
-	if (old_size < size)
-		while (++i < old_size)
-			((unsigned char *)new_ptr)[i] = ((unsigned char *)ptr)[i];
+	oldsize = ft_strlen(ptr);
+	if (oldsize < size)
+		ft_strlcat(newptr, ptr, oldsize + 1);
 	else
-		while (++i < size)
-			((unsigned char *)new_ptr)[i] = ((unsigned char *)ptr)[i];
+		ft_strlcat(newptr, ptr, size);
 	free(ptr);
-	return (new_ptr);
+	return (newptr);
 }
+	// while (++i < old_size)
+		// 	((unsigned char *)new_ptr)[i] = ((unsigned char *)ptr)[i];
