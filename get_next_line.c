@@ -6,104 +6,71 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 07:10:16 by teando            #+#    #+#             */
-/*   Updated: 2024/11/06 04:55:07 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/17 20:27:09 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-/**
- * @brief バッファ分の文字列を読み込む補助関数
- * @param buf 読み込みバッファ
- * @param fd 読み込み対象のファイルディスクリプタ
- * @return 1以上: 成功, 0: EOF到達, -1: エラー発生
- */
-static ssize_t	read_buf(char **buf, int fd)
+static ssize_t	read_buf_to_newline(char **r, char **newline, char **saved,
+		int fd)
 {
+	ssize_t	read_total;
 	ssize_t	size;
-
-	*buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!*buf)
-		return (-1);
-	size = read(fd, *buf, BUFFER_SIZE);
-	if (size <= 0)
-	{
-		free(*buf);
-		*buf = NULL;
-		return (size);
-	}
-	(*buf)[size] = '\0';
-	return (size);
-}
-
-/**
- * @brief 1行分のテキストを読み込んで処理する内部関数
- * @param r 読み込んだ行を格納する変数へのポインタ
- * @param newline 改行文字へのポインタを格納する変数へのポインタ
- * @param saved 前回の読み込みの残りを保持する静的バッファへのポインタ
- * @param fd 読み込み対象のファイルディスクリプタ
- * @return 1以上: 成功, 0: EOF到達, -1: エラー発生
- */
-static ssize_t	fetch_one_line(char **r, char **newline, char **saved, int fd)
-{
 	char	*buf;
-	char	*tmp;
-	ssize_t	code;
 
+	read_total = 0;
+	if (saved[fd])
+		newline = ft_strchr(saved[fd], '\n');
+	buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buf)
+		return (-1);
 	while (!*newline)
 	{
-		code = read_buf(&buf, fd);
-		if (code <= 0)
-			return (code);
-		tmp = ft_strjoin(*r, buf);
-		free(buf);
-		if (!tmp)
-			return (-1);
-		free(*r);
-		*r = tmp;
-		*newline = ft_strchr(*r, '\n');
+		size = read(fd, buf, BUFFER_SIZE);
+		if (size <= 0)
+			return (free(buf), size);
+		buf[size] = '\0';
+		read_total += size;
+		*r = ft_realloc(*r, read_total + 1);
+		if (!*r)
+			return (free(buf), -1);
+		ft_strlcat(*r, buf, read_total + 1);
+		*newline = ft_strchr(*r + (read_total - size - 1), '\n');
 	}
-	*saved = ft_strdup(*newline + 1);
-	if (!*saved)
-		return (-1);
-	tmp = endfree_strndup(*r, *newline - *r + 1);
-	if (!tmp)
-		return (-1);
-	*r = tmp;
+	return (free(buf), read_total);
+}
+
+static ssize_t	str_partitioning(char **r, char **newline, char **saved, int fd)
+{
+	*saved[fd] = ft_strdup(*newline + 1);
+	if (!*saved[fd])
+		return (free(*r), -1);
+	(*r)[*newline - *r + 1] = '\0';
 	return (1);
 }
 
-/**
- * @brief ファイルから1行ずつテキストを読み込む関数
- * @param fd 読み込み対象のファイルディスクリプタ
- * @return 読み込んだ行の文字列（終端に改行文字を含む）
- *         エラーまたはEOFの場合はNULL
- */
 char	*get_next_line(int fd)
 {
-	static char	*saved;
+	static char	*saved[FD_MAX];
 	char		*newline;
 	char		*r;
-	ssize_t		code;
+	ssize_t		read_size;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (saved)
-		newline = ft_strchr(saved, '\n');
-	else
-		newline = NULL;
-	r = saved;
-	code = fetch_one_line(&r, &newline, &saved, fd);
-	if (code <= 0 && r && *r)
+	newline = NULL;
+	r = saved[fd];
+	if (!newline)
 	{
-		if (code == -1 && saved != r)
-			free(saved);
-		saved = NULL;
+		read_size = read_buf_to_newline(r, newline, saved[fd], fd);
+		if (read_size == -1)
+			return (free(r), NULL);
+		if (read_size == 0)
+			saved[fd] = NULL;
 	}
-	if (code == -1 || (r && !*r))
-	{
-		free(r);
-		r = NULL;
-	}
+	if (newline)
+		if (str_partitioning(&r, &newline, &saved[fd], fd) == -1)
+			return (free(r), NULL);
 	return (r);
 }

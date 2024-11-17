@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 09:01:59 by teando            #+#    #+#             */
-/*   Updated: 2024/11/05 17:42:26 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/17 20:03:44 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,49 +53,43 @@ char	*ft_strdup(const char *s)
 	return (r_head);
 }
 
-char	*endfree_strndup(const char *s, size_t n)
+void	*ft_realloc(void *ptr, size_t size)
 {
-	char	*r;
-	char	*r_head;
-	char	*s_head;
-	size_t	len;
+	void	*new_ptr;
+	void	*ptr_haed;
 
-	len = 0;
-	while (len < n && s[len])
-		len++;
-	s_head = (char *)s;
-	r_head = (char *)malloc((len + 1) * sizeof(char));
-	if (r_head)
+	if (!ptr)
+		return (malloc(size));
+	if (size)
 	{
-		r = r_head;
-		while (len--)
-			*r++ = *s++;
-		*r = '\0';
-		free(s_head);
+		new_ptr = malloc(size);
+		if (!new_ptr)
+			return (NULL);
+		ptr_haed = new_ptr;
+		while (size--)
+			*(unsigned char *)new_ptr++ = *(unsigned char *)ptr++;
 	}
-	return (r_head);
+	free(ptr);
+	return (ptr_haed);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 {
-	char	*r;
-	char	*r_head;
-	size_t	size;
+	size_t dst_len;
+	size_t src_len;
 
-	if (!s1)
-		s1 = "";
-	if (!s2)
-		s2 = "";
-	size = ft_strlen(s1) + ft_strlen(s2) + 1;
-	r_head = (char *)malloc(sizeof(char) * size);
-	if (r_head)
+	if (dstsize == 0)
+		return (ft_strlen(src));
+	dst_len = ft_strlen(dst);
+	if (dstsize <= dst_len)
+		dst_len = dstsize;
+	src_len = ft_strlen(src);
+	if (dstsize > dst_len)
 	{
-		r = r_head;
-		while (*s1)
-			*r++ = *s1++;
-		while (*s2)
-			*r++ = *s2++;
-		*r = '\0';
+		dst += dst_len;
+		while (*src && dst_len < dstsize - 1)
+			*dst++ = (dstsize--, *src++);
+		*dst = '\0';
 	}
-	return (r_head);
+	return (dst_len + src_len);
 }
