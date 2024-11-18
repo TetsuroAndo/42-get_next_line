@@ -6,18 +6,18 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 07:10:16 by teando            #+#    #+#             */
-/*   Updated: 2024/11/18 08:44:15 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/18 10:03:15 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdlib.h>
 
-static ssize_t	read_buf_to_newline(char **r, char **newline, int fd)
+static ssize_t	read_buf_to_newline(char **r, char **newline, char **temp,
+		int fd)
 {
-	ssize_t read_total;
+	ssize_t	read_total;
 	ssize_t	size;
-	char	*temp;
 	char	*buf;
 
 	read_total = 0;
@@ -33,11 +33,11 @@ static ssize_t	read_buf_to_newline(char **r, char **newline, int fd)
 			return (free(buf), size);
 		buf[size] = '\0';
 		read_total += size;
-		temp = ft_strjoin(*r, buf);
-		free(*r);
-		if (!temp)
+		*temp = ft_strjoin(*r, buf);
+		if (!*temp)
 			return (free(buf), -1);
-		*r = temp;
+		free(*r);
+		*r = *temp;
 		*newline = ft_strchr(*r + (read_total - size), '\n');
 	}
 	return (free(buf), read_total);
@@ -55,7 +55,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	r = saved[fd];
 	newline = NULL;
-	read_size = read_buf_to_newline(&r, &newline, fd);
+	read_size = read_buf_to_newline(&r, &newline, &temp, fd);
 	if (read_size == -1)
 		return (free(r), free(saved[fd]), NULL);
 	if (read_size == 0)
@@ -64,7 +64,7 @@ char	*get_next_line(int fd)
 	{
 		temp = ft_strdup(newline + 1);
 		if (!temp)
-			return (free(r), NULL);
+			return (free(r), free(saved[fd]), NULL);
 		saved[fd] = temp;
 		r[newline - r + 1] = '\0';
 	}
