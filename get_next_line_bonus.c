@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 07:10:16 by teando            #+#    #+#             */
-/*   Updated: 2024/11/18 10:32:38 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/18 10:32:10 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
-#include <stdlib.h>
+#include "get_next_line_bonus.h"
 
 static ssize_t	read_buf_to_newline(char **r, char **newline, char **temp,
 		int fd)
