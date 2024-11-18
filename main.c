@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 19:51:04 by teando            #+#    #+#             */
-/*   Updated: 2024/11/18 09:59:15 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/18 10:07:17 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	main(void)
 	while (j < 1)
 	{
 		printf("file is open: fd=%d\n===\n", fd[j]);
-		while (++i < 600)
+		while (++i < 7)
 		{
 			printf("i = %d\n", i);
 			r = get_next_line(fd[j]);
