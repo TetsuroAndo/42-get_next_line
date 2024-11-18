@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 07:10:16 by teando            #+#    #+#             */
-/*   Updated: 2024/11/18 11:07:17 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/18 12:37:25 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,12 @@ char	*get_next_line(int fd)
 	r = saved[fd];
 	newline = NULL;
 	read_size = read_buf_to_newline(&r, &newline, &temp, fd);
-	if (read_size == -1)
-		return (free(r), free(saved[fd]), NULL);
+	if (read_size == -1 && saved[fd] != r)
+		free(saved[fd]);
+	if (read_size == -1 || (r && !*r))
+		return (free(r), NULL);
 	if (read_size == 0)
 		saved[fd] = NULL;
-	if (r && !*r)
-		return (free(r), NULL);
 	if (newline)
 	{
 		saved[fd] = ft_strdup(newline + 1);
