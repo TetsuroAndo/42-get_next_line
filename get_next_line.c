@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 07:10:16 by teando            #+#    #+#             */
-/*   Updated: 2024/11/06 04:55:07 by teando           ###   ########.fr       */
+/*   Updated: 2024/11/21 14:49:26 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,6 @@ char	*get_next_line(int fd)
 		saved = NULL;
 	}
 	if (code == -1 || (r && !*r))
-	{
-		free(r);
 		r = NULL;
-	}
 	return (r);
 }
