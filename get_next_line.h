@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 09:02:28 by teando            #+#    #+#             */
-/*   Updated: 2024/11/21 14:53:46 by teando           ###   ########.fr       */
+/*   Updated: 2024/12/31 04:49:04 by teando           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 4096
-# endif
-
-# ifndef FD_MAX
-#  define FD_MAX 1024
 # endif
 
 # include <stddef.h>
