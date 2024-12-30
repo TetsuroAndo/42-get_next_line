@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
@@ -6,21 +6,21 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 19:51:04 by teando            #+#    #+#             */
-/*   Updated: 2024/12/31 04:48:47 by teando           ###   ########.fr       */
+/*   Updated: 2024/12/31 06:42:52 by teando           ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "get_next_line.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-int	main(void)
+int main(void)
 {
-	int		fd[3];
-	char	*r;
-	int		i;
-	int		j;
+	int fd[3];
+	char *r;
+	int i;
+	int j;
 
 	printf("start program\n");
 	i = -1;
@@ -33,7 +33,7 @@ int	main(void)
 	while (j < 1)
 	{
 		printf("file is open: fd=%d\n===\n", fd[j]);
-		while (++i < 15)
+		while (++i < 6)
 		{
 			// printf("i = %d\n", i);
 			r = get_next_line(fd[j]);

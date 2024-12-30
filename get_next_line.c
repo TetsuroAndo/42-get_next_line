@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
@@ -6,18 +6,18 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 07:10:16 by teando            #+#    #+#             */
-/*   Updated: 2024/12/31 04:49:49 by teando           ###   ########.fr       */
+/*   Updated: 2024/12/31 06:40:29 by teando           ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
 #include "get_next_line.h"
 
-static ssize_t	read_buf_to_newline(char **r, char **newline, char **temp,
-		int fd)
+static ssize_t read_buf_to_newline(char **r, char **newline, char **temp,
+								   int fd)
 {
-	ssize_t	read_total;
-	ssize_t	size;
-	char	*buf;
+	ssize_t read_total;
+	ssize_t size;
+	char *buf;
 
 	read_total = 0;
 	if (*r)
@@ -42,13 +42,13 @@ static ssize_t	read_buf_to_newline(char **r, char **newline, char **temp,
 	return (free(buf), read_total);
 }
 
-char	*get_next_line(int fd)
+char *get_next_line(int fd)
 {
-	static char	*saved;
-	char		*newline;
-	char		*temp;
-	char		*r;
-	ssize_t		read_size;
+	static char *saved;
+	char *newline;
+	char *temp;
+	char *r;
+	ssize_t read_size;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
@@ -57,10 +57,10 @@ char	*get_next_line(int fd)
 	read_size = read_buf_to_newline(&r, &newline, &temp, fd);
 	if (read_size == -1 && saved != r)
 		return (free(saved), free(r), saved = NULL, NULL);
-	if (read_size == -1)
+	if (read_size == -1 || (r && !*r))
 		return (free(r), saved = NULL, NULL);
-	if (read_size == 0 && (!r || (r && !*r)))
-		return (free(r), saved = NULL, NULL);
+	if (read_size == 0)
+		saved = NULL;
 	if (newline)
 	{
 		saved = ft_strdup(newline + 1);
