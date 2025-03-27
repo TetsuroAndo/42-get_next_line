@@ -6,7 +6,7 @@
 /*   By: teando <teando@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 19:51:04 by teando            #+#    #+#             */
-/*   Updated: 2025/03/27 11:46:29 by teando           ###   ########.fr       */
+/*   Updated: 2025/03/27 12:16:25 by teando           ###   ########.fr       */
 /*                                                                            */
 /******************************************************************************/
 
@@ -17,31 +17,19 @@
 
 int	main(void)
 {
-	int		fd[3];
+	int		fd;
 	char	*r;
 	int		i;
-	int		j;
 
-	printf("start program\n");
 	i = -1;
-	j = 0;
-	// fd[0] = 0;
-	fd[0] = open("test.txt", O_RDONLY);
-	// fd[1] = open("1.txt", O_RDONLY);
-	// fd[2] = open("2.txt", O_RDONLY);
-	// fd[0] = 0;
-	while (j < 1)
+	fd = open("test.txt", O_RDONLY);
+	printf("file is open: fd=%d\n===\n", fd);
+	while (++i < 100)
 	{
-		printf("file is open: fd=%d\n===\n", fd[j]);
-		while (++i < 100)
-		{
-			// printf("i = %d\n", i);
-			r = get_next_line(fd[j]);
-			printf("%s\n", r);
-			free(r);
-		}
-		close(fd[j]);
-		j++;
+		r = get_next_line(fd);
+		printf("%s", r);
+		free(r);
 	}
+	close(fd);
 	return (0);
 }
